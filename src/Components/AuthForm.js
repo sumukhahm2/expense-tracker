@@ -25,36 +25,59 @@ const AuthForm=()=>{
     const authFormSubmitHandler=async(event)=>{
        event.preventDefault()
        let errorMessage='Authentication Error'
-       if(password!==confirmPassword)
+       let response
+       if(inLogin)
        {
-         errorMessage='Password Missmatch Kindly Enter Password again'
-         setError(errorMessage)
-       }
-       else{
-        const response= await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog', {
-            method:'POST',
-            body:JSON.stringify({
+          response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
+          method:'POST',
+          body:JSON.stringify({
             email:emailRef.current.value,
             password:passwordRef.current.value,
             returnSecureToken:true
-         }),
-         headers:{
+          }),
+          headers:{
             'Content-Type': 'application/json'
          }
          })
-         const data=await response.json()
-           if(data && data.error && data.error.message)
-           {
-            errorMessage=data.error.message
-            setError(errorMessage)
-           }
-           else if(data.idToken)
-           {
-            ctx.setToken({token:data.idToken,email:data.email})
-                  
-           }
+          
        }
-      
+       else{
+        response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
+          method:'POST',
+          body:JSON.stringify({
+            email:emailRef.current.value,
+            password:passwordRef.current.value,
+            returnSecureToken:true
+          }),
+          headers:{
+            'Content-Type': 'application/json'
+         }
+         })
+       }
+        if(!inLogin && password!==confirmPassword)
+        {
+          errorMessage='Password Missmatch Kindly Enter Password again'
+          setError(errorMessage)
+        }
+        else{
+          const data=await response.json()
+            if(data && data.error && data.error.message)
+            {
+             errorMessage=data.error.message
+             setError(errorMessage)
+            }
+            else if(data.idToken)
+            {
+             ctx.setToken({token:data.idToken,email:data.email})
+                   
+            }
+        }
+        
+         
+          
+       
+       
+       
       
     }
     const switchModeHandler=(event)=>{
@@ -67,8 +90,9 @@ const AuthForm=()=>{
           <Row>
             <Col className='col-6' >
               <Form className='border border-dark shadow-lg m-5 rounded' onSubmit={authFormSubmitHandler}>
-                <Container fluid className='text-center fw-bold border-bottom border-dark' style={{backgroundColor:'#2482DF',height:'3rem'}}>
-                <Form.Text className='m-5' style={{color:'white',fontSize:'25px'}}>{inLogin?'LogIn':'SignUp'}</Form.Text>
+                <Container fluid className='text-center fw-bold border-bottom border-dark ' style={{backgroundColor:'#2482DF',height:'3rem'}}>
+                <i className="fa-solid fa-lock lock" style={{color:'#ffffff'}}></i>
+                <Form.Text className='m-1' style={{color:'white',fontSize:'30px'}}>{inLogin?'LogIn':'SignUp'}</Form.Text>
                 </Container>
                 
         <Form.Group className="mb-3  m-3 fw-bold">
