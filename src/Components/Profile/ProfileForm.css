@@ -12,15 +12,48 @@
     margin: 0rem;
     background-color: whitesmoke;
     color:black;
-    top: 20vh;
+    top: 5vh;
     left: 25%;
     width: 50%;
-    max-height: 100vh;
+   height: auto;
+   max-height: 100vh;
+    
    padding: 1rem;
     border-radius: 14px;
-    box-shadow:  0 2px 8px rgba(0, 0, 0, 0.25);
+    box-shadow:  0 2px 8px rgba(148, 223, 171, 0.25);
     z-index: 30;
     animation: slide-down 300ms ease-out forwards;
+   
+}
+.upload-photo{
+    font-size: 80px;
+    border: 2px ridge rgb(247, 241, 241);
+    padding: 30px 40px;
+    margin-top: 5px;
     
 }
-
+.edit-photo{
+    position: absolute;
+    font-size: large;
+    right:15%;
+    top: 20%;
+    cursor: pointer;
+    color: blue;
+}
+.edit-photo-span{
+    position: absolute;
+    align-items: center;
+    padding: 5px 15px;
+    right:37%;
+    background: rgb(175, 170, 170);
+    border: 2px ridge rgb(247, 243, 243);
+}
+#input-file{
+    position: absolute;
+    font-size: smaller;
+    display: none;
+    top:50%;
+    right:15%;
+    top:1px;
+   
+}

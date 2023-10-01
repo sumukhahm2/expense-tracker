@@ -1,57 +1,93 @@
-import React,{Fragment,useRef} from'react'
-import { Button, Container, Form } from 'react-bootstrap';
+import React,{Fragment,useState,useEffect} from'react'
+import UpdateProfile from './UpdateProfile';
 import ReactDOM from 'react-dom'
+import { Container } from 'react-bootstrap';
 import './ProfileForm.css'
+import * as storage from "firebase/app";
+
+
+
 const BackDrop=(props)=>{
     return(
-        <div className='backdrop'></div>
+        <div className='backdrop' onClick={props.onConfirm}></div>
     );
 }
 
 const OverLay=(props)=>{
-    const fullNameRef=useRef()
-    const urlRef=useRef()
-    const profileUpdateHandler=async()=>{
-        const response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
-            method:'POST',
-            body:JSON.stringify({
-                idToken:localStorage.getItem('token'),
-                displayName:fullNameRef.current.value,
-                photoUrl:urlRef.current.value,
-                returnSecureToken:true
-            })
+    const [updatedData,setData]=useState({
+        name:' Not Updated',
+        photoUrl:' Not Updated',
+        email:'Not Updated'
+    })
+    useEffect(()=>{
+      async function fetchUpdatedData(){
+        const response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
+          method:'POST',
+          body: 
+          JSON.stringify(
+            {idToken:localStorage.getItem('token')}
+            )
+    
+
         })
         const data=await response.json()
-        console.log(data)
+        setData({name:data.users[0].displayName,photoUrl:data.users[0].photoUrl,email:data.users[0].email})
+      }
+      fetchUpdatedData()
+    },[])
+    const [update,setUpdate]=useState(false)
+    const [updatePhoto,setPhoto]=useState()
+    const dataHandler=(item)=>{
+      setData({
+        name:item.displayName,
+        photoUrl:item.photoUrl,
+        email:localStorage.getItem('email')
+      })
     }
+    const updateProfilePage=(event)=>{
+     event.preventDefault()
+      setUpdate(true)
+    }
+   const inputFileHandler=(event)=>{
+    event.preventDefault()
+     console.log(event.target.files[0].name)
+      const uploadedImage=storage().ref(`files/${event.target.files[0].name}`).put(event.target.files[0])
+      uploadedImage.on(
+        'state_changed',
+        (snapshot)=>{
+
+        },
+        (error)=>console.log(error),
+        ()=>{
+            storage().ref('files').child(event.target.files[0].name).getDownloadURL().then((url)=>{
+                console.log(url)
+            })
+        }
+      )
+   }
+   
     return(
         <div className='overlay'>
-            
-          <Form onSubmit={profileUpdateHandler}>
-          <Container  fluid>
-            <Form.Text className='mb-2'>
-               <h2 style={{color:'orange'}}> <i class="fa-solid fa-user"></i> Update Your Profile</h2>
-            </Form.Text>
-            </Container>
-            <Form.Group className='mb-2 fw-bold'>
-            <Form.Label><i class="fa-solid fa-address-book"></i> Full Name</Form.Label>
-                <Form.Control type='text' ref={fullNameRef}/>
-            </Form.Group>
-            <Form.Group className='mb-2 fw-bold'>
-                <Form.Label><i class="fa-solid fa-globe"></i> Profile Photo URL</Form.Label>
-                <Form.Control type='text' ref={urlRef}/>
-            </Form.Group>
-            <Form.Group className='mb-2 fw-bold'>
-                <Button type='submit' style={{backgroundColor:'orange'}}>Update</Button>
-            </Form.Group>
-          </Form>
+           {updatedData && !update && <Container>
+                <h1 className='text-center mb-5'><i className="fa-solid fa-user"></i>Profile Information</h1>
+                <Container className='text-center'>
+                  <span className='rounded-circle upload-photo '><i className="fa-regular fa-image" style={{color: '#b6e3f2'}}></i><img src={updatePhoto} alt=''/></span>
+             <span className='edit-photo-span rounded-circle'> <label for='input-file'><i className="fa-regular fa-pen-to-square edit-photo"></i></label><input type='file' id='input-file' onChange={inputFileHandler}/></span>
+                  
+                  </Container>
+                <h3 className='mb-5 mt-5'><i class="fa-solid fa-address-book"></i>Name: {updatedData.name}</h3>
+                <h3 className='mb-5'><i class="fa-solid fa-globe"></i>Profile URL: {updatedData.photoUrl}</h3>
+                <h3 className='mb-5'><i class="fa-solid fa-envelope"></i>Email: {updatedData.email}</h3>
+            </Container>}
+            {!update && <a href='/' onClick={updateProfilePage}>Update Profile</a>}
+           {update && <UpdateProfile profileData={dataHandler}/>}
         </div>
     );
 }
 const ProfileForm=(props)=>{
     return(
      <Fragment>
-       {ReactDOM.createPortal(<BackDrop/>,document.getElementById('backdrop'))}
+       {ReactDOM.createPortal(<BackDrop onConfirm={props.onConfirm}/>,document.getElementById('backdrop'))}
        {ReactDOM.createPortal(<OverLay/>,document.getElementById('overlay'))}
      </Fragment>
     );

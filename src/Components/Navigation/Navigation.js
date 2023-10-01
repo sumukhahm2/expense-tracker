@@ -25,7 +25,7 @@ const Navigation=(props)=>{
             <Nav.Link  className='mx-3'>Features</Nav.Link>
            {ctx.login && <Nav.Link className='mx-3' onClick={logoutHandler}>Logout</Nav.Link>}
            {ctx.login && <Nav.Link  className='mx-3' onClick={profileHandler}>Complete Your Profile</Nav.Link>}
-           {isProfile && <ProfileForm />}
+           {isProfile && <ProfileForm onConfirm={profileHandler}/>}
           </Nav>
         </Container>
       </Navbar>
