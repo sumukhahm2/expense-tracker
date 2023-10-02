@@ -14,7 +14,6 @@ const UpdateProfile=(props)=>{
             })
         })
         const data=await response.json()
-        console.log(data)
         props.profileData(data)
     }
     return(

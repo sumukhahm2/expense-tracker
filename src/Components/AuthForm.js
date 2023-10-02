@@ -5,6 +5,7 @@ import Image1 from '../logo/5355919.jpg'
 import './AuthForm.css'
 const AuthForm=()=>{
     const emailRef=useRef()
+    const resetPasswordRef=useRef()
     const passwordRef=useRef()
     const ConfirmPasswordRef=useRef()
     const ctx=useContext(Context)
@@ -12,6 +13,7 @@ const AuthForm=()=>{
     const [confirmPassword,setConfirmPassword]=useState('')
     const [error,setError]=useState('')
     const [inLogin,setInLogin]=useState(false)
+    const [passwordReset,setPasswordReset]=useState(false)
     const passwordHandler=(event)=>{
        
        setPassword(event.target.value)
@@ -72,17 +74,41 @@ const AuthForm=()=>{
                    
             }
         }
-        
-         
-          
-       
-       
-       
-      
+    
     }
     const switchModeHandler=(event)=>{
       event.preventDefault()
       setInLogin((prev)=>!prev)
+     }
+     const forgotPasswordHandler=(event)=>{
+      event.preventDefault()
+      setPasswordReset(true)
+      
+
+     }
+     const submitResetPasswordHandler=async(event)=>{
+      event.preventDefault()
+      let errorMessage='Authentication Error'
+      const response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
+        method:'POST',
+        body:JSON.stringify({
+          requestType:'PASSWORD_RESET',
+          email:resetPasswordRef.current.value
+        })
+      })
+      const data= await response.json()
+      if(data && data.error && data.error.message)
+      {
+        errorMessage=data.error.message
+        setError(errorMessage)
+        alert(errorMessage)
+      }
+      else if(data.email) 
+      {
+        alert('Password reset link sent to your email')
+        console.log(data)
+      }
+
      }
     return(
      <Fragment>
@@ -92,32 +118,42 @@ const AuthForm=()=>{
               <Form className='border border-dark shadow-lg m-5 rounded' onSubmit={authFormSubmitHandler}>
                 <Container fluid className='text-center fw-bold border-bottom border-dark ' style={{backgroundColor:'#2482DF',height:'3rem'}}>
                 <i className="fa-solid fa-lock lock" style={{color:'#ffffff'}}></i>
-                <Form.Text className='m-1' style={{color:'white',fontSize:'30px'}}>{inLogin?'LogIn':'SignUp'}</Form.Text>
+               {!passwordReset && <Form.Text className='m-1' style={{color:'white',fontSize:'30px'}}>{inLogin?'LogIn':'SignUp'}</Form.Text>}
+                <Form.Text className='m-1' style={{color:'white',fontSize:'30px'}}>Password Reset</Form.Text>
                 </Container>
                 
-        <Form.Group className="mb-3  m-3 fw-bold">
+       {!passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
         <Form.Label>Email Id</Form.Label>
         <Form.Control placeholder="Enter Your Email"  type='email'required ref={emailRef}  />
-      </Form.Group>
-      <Form.Group className="mb-3  m-3 fw-bold">
+      </Form.Group>}
+      {!passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
         <Form.Label>Password</Form.Label>
         <Form.Control placeholder="Enter Password" type='password'required ref={passwordRef} onChange={passwordHandler} />
-      </Form.Group>
-     {!inLogin && <Form.Group className="mb-3  m-3 fw-bold">
+      </Form.Group>}
+     {!inLogin && !passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
         <Form.Label>Confirm Password</Form.Label>
         <Form.Control placeholder="Confirm Password" type='password'  required ref={ConfirmPasswordRef} onChange={confirmPasswordHandler}/>
       </Form.Group> }
       {error && <p>{error}</p>}
-      <Form.Group className="mb-3  m-3">
+      {!passwordReset &&<Form.Group className="mb-3  m-3">
         <Button type='submit'>{inLogin?'LogIn':'SignUp'}</Button>
-      </Form.Group> 
+      </Form.Group> }
       <Form.Group className="mb-3  m-3">
+      {inLogin && !passwordReset && <a href='' onClick={forgotPasswordHandler} >forgot password?</a>}
+      </Form.Group>
+      {!passwordReset && <Form.Group className="mb-3  m-3">
       <Form.Text>{inLogin?'Dont Have An Account':'Already Have An Account?'}</Form.Text>
         <a href='' onClick={switchModeHandler}>{inLogin?'SignUp':'LogIn'}</a> 
-      </Form.Group>
-      
+      </Form.Group>}
+      {passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
+        <Form.Label>Email Id</Form.Label>
+        <Form.Control placeholder="Enter Your Email"  type='email'required ref={resetPasswordRef}  />
+      </Form.Group>}
+      {passwordReset &&  <Form.Group className="mb-3  m-3">
+      <Button type='submit' onClick={submitResetPasswordHandler}>Submit</Button>
+    </Form.Group>}
       </Form>
-              
+      
            
       </Col>
             <Col className='col-6 text-center'>

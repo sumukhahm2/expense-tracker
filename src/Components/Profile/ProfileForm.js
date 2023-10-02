@@ -3,7 +3,7 @@ import UpdateProfile from './UpdateProfile';
 import ReactDOM from 'react-dom'
 import { Container } from 'react-bootstrap';
 import './ProfileForm.css'
-import * as storage from "firebase/app";
+import Verify from '../../logo/check-mark.png'
 
 
 
@@ -14,8 +14,10 @@ const BackDrop=(props)=>{
 }
 
 const OverLay=(props)=>{
+    const [update,setUpdate]=useState(false)
+    const [emailVerified,setEmailVerified]=useState()
     const [updatedData,setData]=useState({
-        name:' Not Updated',
+        name:' Not Updated', 
         photoUrl:' Not Updated',
         email:'Not Updated'
     })
@@ -33,17 +35,19 @@ const OverLay=(props)=>{
         })
         const data=await response.json()
         setData({name:data.users[0].displayName,photoUrl:data.users[0].photoUrl,email:data.users[0].email})
+        if(data.users[0].emailVerified)
+         setEmailVerified(true)
       }
       fetchUpdatedData()
     },[])
-    const [update,setUpdate]=useState(false)
-    const [updatePhoto,setPhoto]=useState()
+   
     const dataHandler=(item)=>{
       setData({
         name:item.displayName,
         photoUrl:item.photoUrl,
         email:localStorage.getItem('email')
       })
+      props.onConfirmUpdate()
     }
     const updateProfilePage=(event)=>{
      event.preventDefault()
@@ -93,20 +97,27 @@ const OverLay=(props)=>{
    
     return(
         <div className='overlay'>
+            <Container className='border border-dark'>
            {updatedData && !update && <Container>
-                <h1 className='text-center mb-5'><i className="fa-solid fa-user"></i>Profile Information</h1>
+                <h1 className='text-center mb-5' style={{color:'green'}}><i className="fa-solid fa-user"></i>Profile Information</h1>
                 <Container className='text-center'>
-                  <span className='rounded-circle upload-photo '><i className="fa-regular fa-image" style={{color: '#b6e3f2'}}></i><img src={updatePhoto} alt=''/></span>
-             <span className='edit-photo-span rounded-circle'> <label for='input-file'><i className="fa-regular fa-pen-to-square edit-photo"></i></label><input type='file' id='input-file' onChange={inputFileHandler}/></span>
+                  <span className='rounded-circle upload-photo '>
+                <i className="fa-regular fa-image" style={{color: '#b6e3f2'}}></i></span>
+             <span className='edit-photo-span rounded-circle'> <label for='input-file'>
+                <i className="fa-regular fa-pen-to-square edit-photo"></i></label>
+                <input type='file' id='input-file' onChange={inputFileHandler}/></span>
                   
                   </Container>
-                <h4 className='mb-5 mt-5'><i class="fa-solid fa-address-book"></i>Name: {updatedData.name}</h4>
-                <h4 className='mb-5'><i class="fa-solid fa-globe"></i>Profile URL: {updatedData.photoUrl}</h4>
-                <h4 className='mb-5'><i class="fa-solid fa-envelope"></i>Email: {updatedData.email} <a href='/' onClick={verifyEmailHandler}>verify</a></h4> 
+                <h4 className='mb-5 mt-5'><i className="fa-solid fa-address-book" style={{color:'orange'}}></i> Name: {updatedData.name}</h4>
+                <h4 className='mb-5'><i className="fa-solid fa-globe" style={{color:'blue'}}></i> Profile URL: {updatedData.photoUrl}</h4>
+                <h4 className='mb-5'><i className="fa-solid fa-envelope"></i>   
+                 Email: {updatedData.email} 
+                {!emailVerified?<a href='/' onClick={verifyEmailHandler}>verify</a>:<img src={Verify} alt='' style={{width:'30px'}}/>}</h4> 
                 {error && <p>{error}</p>}
             </Container>}
             {!update && <a href='/' onClick={updateProfilePage}>Update Profile</a>}
            {update && <UpdateProfile profileData={dataHandler}/>}
+           </Container>
         </div>
     );
 }
