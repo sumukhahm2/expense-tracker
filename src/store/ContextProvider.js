@@ -3,7 +3,7 @@ import Context from './Context';
 const ContextProvider=(props)=>{
 
     console.log('context provider')
-    const [token,setIdToken]=useState('')
+    const [updatedToken,setIdToken]=useState('')
     const [userId,setUserId]=useState('')
     useEffect(()=>{
         setIdToken(localStorage.getItem('token'))
@@ -18,7 +18,7 @@ const ContextProvider=(props)=>{
       setUserId(email)
       localStorage.setItem('email',email)
     }
-    const isLogin=!!token
+    const isLogin=!!updatedToken
    const logoutHandler=()=>{
     setIdToken('')
     setUserId('')
@@ -26,12 +26,14 @@ const ContextProvider=(props)=>{
      localStorage.removeItem('token')
 
    }
+   console.log(updatedToken)
+   console.log(!!updatedToken)
     const context={
         items:[],
     login:isLogin,
     setToken:tokenHandler,
     logout:logoutHandler,
-    token:token,
+    token:updatedToken,
     userId:userId
     }
     return(

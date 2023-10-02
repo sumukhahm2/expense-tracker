@@ -1,8 +1,11 @@
 import React,{Fragment,useRef,useState,useContext} from 'react'
-import { Button, Container,Form, NavLink, Row,Col } from 'react-bootstrap';
+import { Button, Container,Form, NavLink, Row,Col, Spinner} from 'react-bootstrap';
+
 import Context from '../store/Context';
 import Image1 from '../logo/5355919.jpg'
+
 import './AuthForm.css'
+
 const AuthForm=()=>{
     const emailRef=useRef()
     const resetPasswordRef=useRef()
@@ -14,6 +17,7 @@ const AuthForm=()=>{
     const [error,setError]=useState('')
     const [inLogin,setInLogin]=useState(false)
     const [passwordReset,setPasswordReset]=useState(false)
+    const [loader,setLoader]=useState(false)
     const passwordHandler=(event)=>{
        
        setPassword(event.target.value)
@@ -26,6 +30,7 @@ const AuthForm=()=>{
    
     const authFormSubmitHandler=async(event)=>{
        event.preventDefault()
+       setLoader(true)
        let errorMessage='Authentication Error'
        let response
        if(inLogin)
@@ -74,20 +79,24 @@ const AuthForm=()=>{
                    
             }
         }
+        setLoader(false)
     
     }
     const switchModeHandler=(event)=>{
       event.preventDefault()
+      
       setInLogin((prev)=>!prev)
      }
      const forgotPasswordHandler=(event)=>{
       event.preventDefault()
+      
       setPasswordReset(true)
       
 
      }
      const submitResetPasswordHandler=async(event)=>{
       event.preventDefault()
+      setLoader(true)
       let errorMessage='Authentication Error'
       const response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
         method:'POST',
@@ -108,18 +117,20 @@ const AuthForm=()=>{
         alert('Password reset link sent to your email')
         console.log(data)
       }
+      setLoader(false)
 
      }
     return(
      <Fragment>
         <Container fluid className=''>
+       
           <Row>
             <Col className='col-6' >
               <Form className='border border-dark shadow-lg m-5 rounded' onSubmit={authFormSubmitHandler}>
                 <Container fluid className='text-center fw-bold border-bottom border-dark ' style={{backgroundColor:'#2482DF',height:'3rem'}}>
                 <i className="fa-solid fa-lock lock" style={{color:'#ffffff'}}></i>
                {!passwordReset && <Form.Text className='m-1' style={{color:'white',fontSize:'30px'}}>{inLogin?'LogIn':'SignUp'}</Form.Text>}
-                <Form.Text className='m-1' style={{color:'white',fontSize:'30px'}}>Password Reset</Form.Text>
+                {passwordReset && <Form.Text className='m-1' style={{color:'white',fontSize:'30px'}}>Password Reset</Form.Text>}
                 </Container>
                 
        {!passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
@@ -135,9 +146,11 @@ const AuthForm=()=>{
         <Form.Control placeholder="Confirm Password" type='password'  required ref={ConfirmPasswordRef} onChange={confirmPasswordHandler}/>
       </Form.Group> }
       {error && <p>{error}</p>}
-      {!passwordReset &&<Form.Group className="mb-3  m-3">
+      {!passwordReset && !loader &&<Form.Group className="mb-3  m-3">
         <Button type='submit'>{inLogin?'LogIn':'SignUp'}</Button>
       </Form.Group> }
+      {loader && <Container className='text-center'><Spinner animation="border" variant="primary" className='text-center justify'/> </Container>}
+     
       <Form.Group className="mb-3  m-3">
       {inLogin && !passwordReset && <a href='' onClick={forgotPasswordHandler} >forgot password?</a>}
       </Form.Group>
@@ -149,12 +162,12 @@ const AuthForm=()=>{
         <Form.Label>Email Id</Form.Label>
         <Form.Control placeholder="Enter Your Email"  type='email'required ref={resetPasswordRef}  />
       </Form.Group>}
-      {passwordReset &&  <Form.Group className="mb-3  m-3">
+      {passwordReset && !loader && <Form.Group className="mb-3  m-3">
       <Button type='submit' onClick={submitResetPasswordHandler}>Submit</Button>
     </Form.Group>}
       </Form>
-      
-           
+     
+          
       </Col>
             <Col className='col-6 text-center'>
               <img src={Image1}  className='image' alt=''/>

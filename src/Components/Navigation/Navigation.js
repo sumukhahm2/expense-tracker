@@ -4,6 +4,7 @@ import ExpenseImage from '../../logo/budget.png'
 import './Navigation.css'
 import Context from '../../store/Context';
 import ProfileForm from '../Profile/ProfileForm';
+import { NavLink } from 'react-router-dom';
 const Navigation=(props)=>{
   const [isProfileUpdated,setIsProfileUpdated]=useState(false)
   const ctx=useContext(Context)
@@ -52,10 +53,10 @@ const Navigation=(props)=>{
         <Container >
           <Navbar.Brand href="#home"><img src={ExpenseImage} style={{width:'50px'}} alt=''/>Expense Tracker</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link className='mx-3'>Home</Nav.Link>
-            <Nav.Link  className='mx-3'>Features</Nav.Link>
-           {ctx.login && <Nav.Link className='mx-3' onClick={logoutHandler}>Logout</Nav.Link>}
-           {ctx.login && <Nav.Link  className='mx-3' onClick={profileHandler}>{!isProfileUpdated?'Complete Your Profile':'Profile'}</Nav.Link>}
+            <NavLink to={!ctx.login?'/login':'/home'} className='mx-3 nav-link'>{!ctx.login?'Login':'Home'}</NavLink>
+           {ctx.login && <NavLink  to='/expenselist' className='mx-3 nav-link'>ExpenseList</NavLink>}
+           {ctx.login && <NavLink className='mx-3 nav-link' onClick={logoutHandler}>Logout</NavLink>}
+           {ctx.login && <NavLink  className='mx-3 nav-link' onClick={profileHandler}>{!isProfileUpdated?'Complete Your Profile':'Profile'}</NavLink>}
            {isProfile && <ProfileForm onConfirm={profileHandler} onConfirmUpdate={onConfirmUpdate}/>}
           </Nav>
         </Container>

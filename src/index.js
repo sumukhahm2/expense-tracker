@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import ContextProvider from './store/ContextProvider';
 import '../node_modules/react-bootstrap/dist/react-bootstrap'
@@ -16,7 +17,9 @@ const firebaseConfig = {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
  <ContextProvider>
+  <BrowserRouter>
     <App />
+    </BrowserRouter>
     </ContextProvider>
   
 );
