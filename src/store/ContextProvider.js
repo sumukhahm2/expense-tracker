@@ -17,8 +17,11 @@ const ContextProvider=(props)=>{
            let i=0
            for(let item in data )
            {
-             arr[i]=data[item]
-             i++;
+             arr[i]={
+                ...data[item],
+                id:item
+             }
+            i++
            }
            console.log(arr)
            setExpenseData((prev)=>{
@@ -50,11 +53,26 @@ const ContextProvider=(props)=>{
      localStorage.removeItem('token')
 
    }
+   const editExpenseHandler=(item)=>{
+     const updated=context.items.map((obj)=>{
+        return obj.id===item.id?{...obj,...item}:obj
+     })
+     setExpenseData(updated)
+     
+   }
+   const deleteExpenseHandler=(item)=>{
+      const updated=context.items.filter((obj)=>{
+        return obj.id!==item.id
+      })
+      setExpenseData(updated)
+   }
     const context={
         items:addExpenseData,
     login:isLogin,
     setToken:tokenHandler,
     setExpense:addExpenseHandler,
+    editExpense:editExpenseHandler,
+    deleteExpense:deleteExpenseHandler,
     logout:logoutHandler,
     token:updatedToken,
     userId:userId

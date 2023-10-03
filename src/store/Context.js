@@ -5,6 +5,8 @@ const Context=React.createContext({
     login:()=>{},
     setToken:(item)=>{},
     setExpense:(item)=>{},
+    editExpense:(item)=>{},
+    deleteExpense:(item)=>{},
     logout:()=>{},
     token:'',
     userId:''

@@ -1,14 +1,14 @@
 import React,{Fragment,useState,useEffect,useContext} from 'react'
-import { Container,Row,Col,Button } from 'react-bootstrap';
+import { Container,Row,Col,Button,Form } from 'react-bootstrap';
 import ExpenseForm from './ExpenseForm';
 import ExpenseImage from'../../logo/accounting (1).png'
 import Context from '../../store/Context';
+import EditExpense from './EditExpense';
 const ExpensePage=(props)=>{
   const [addPage,setPage]=useState(false)
+  const [editExpense,setEditExpense]=useState()
+  const [deleteExpense,setdeleteExpense]=useState()
  const ctx=useContext(Context)
-  useEffect(()=>{
-   
-  },[])
     const addExpenseHandler=()=>{
      setPage(true)
     }
@@ -16,6 +16,22 @@ const ExpensePage=(props)=>{
      ctx.setExpense(data)
      setPage(false)
     }
+    const expenseEdithandler=(item)=>{
+        setPage(true)
+     setEditExpense(item)
+     
+    }
+    const editedDataHandler=(item)=>{
+       ctx.editExpense(item)
+       setPage(false)
+    }
+    const expenseDeleteHandler=async (item)=>{
+        const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/expenses/${item.id}.json`,{
+    method:'DELETE'
+   })
+       ctx.deleteExpense(item)
+    }
+    
     return(
      <Fragment> 
         <Container fluid>
@@ -46,10 +62,12 @@ const ExpensePage=(props)=>{
             <Col className='col-4'><h5>Description</h5></Col>
             <Col className='col-4'><h5> Amount Debited</h5></Col>
         </Row>    
-       {ctx.items.map((item)=><li style={{backgroundColor:'#F7B376',listStyle:'none'}} key={item.id}><Row  style={{backgroundColor:'#F7B376'}} >
-            <Col className='col-4'><h6>{item.catogory}</h6></Col>
+       {ctx.items.map((item)=><li style={{backgroundColor:'#F7B376',listStyle:'none'}} key={item.id} className='mb-1 mt-1'><Row  style={{backgroundColor:'#F7B376'}} >
+            <Col className='col-2'><h6>{item.catogory}</h6></Col>
             <Col className='col-4'><h6>{item.description}</h6></Col>
-            <Col className='col-4'><h6>Rs.{item.amount}/-</h6></Col>
+            <Col className='col-2'><h6>Rs.{item.amount}/-</h6></Col>
+            <Col className='col-2 mt-1'><Button className='btn btn-warning ' style={{height:'30px',width:'30px'}} onClick={expenseEdithandler.bind(null,item)}><i class="fa-solid fa-pen-to-square "></i></Button></Col>
+            <Col className='col-2 mt-1 mb-1'><Button className='btn btn-danger'><i class="fa-solid fa-trash" onClick={expenseDeleteHandler.bind(null,item)}></i></Button></Col>
         </Row> </li>) }
         <Row style={{backgroundColor:'#F7B376'}} className='p-2'>  
             <Col className='col-4'><h5>Total Expense(Debit)</h5></Col>
@@ -60,7 +78,8 @@ const ExpensePage=(props)=>{
        <Button className='btn ' style={{backgroundColor:'#2F6204'}} onClick={addExpenseHandler}>Add Expense</Button>
        </Container>
        
-       {addPage && <ExpenseForm getData={expenseDataHandler}/>}
+       {addPage && !editExpense && <ExpenseForm getData={expenseDataHandler}/>}
+       {addPage && editExpense && <EditExpense data={editExpense} editedData={editedDataHandler}/>}
        </Col>
        </Row>
         </Container>
