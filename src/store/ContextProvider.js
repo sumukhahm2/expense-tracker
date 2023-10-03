@@ -1,14 +1,33 @@
 import React,{Fragment,useState,useEffect} from 'react'
 import Context from './Context';
 const ContextProvider=(props)=>{
-
-    console.log('context provider')
+    const [addExpenseData,setExpenseData]=useState([])
     const [updatedToken,setIdToken]=useState('')
     const [userId,setUserId]=useState('')
     useEffect(()=>{
         setIdToken(localStorage.getItem('token'))
         setUserId(localStorage.getItem('email'))
+        async function getExpense(){
+            const response=await fetch('https://expense-tracker-e1878-default-rtdb.firebaseio.com/expenses.json',{
+                method:'GET'
+            })
+            
+            const data=await response.json()
+           let arr=[];
+           let i=0
+           for(let item in data )
+           {
+             arr[i]=data[item]
+             i++;
+           }
+           console.log(arr)
+           setExpenseData((prev)=>{
+                return [...arr,...prev]
+            })
+        }
+        getExpense()
     },[])
+    console.log(addExpenseData)
     const tokenHandler=(item)=>{
       setIdToken(item.token)
       localStorage.setItem('token',item.token)
@@ -18,6 +37,11 @@ const ContextProvider=(props)=>{
       setUserId(email)
       localStorage.setItem('email',email)
     }
+    const addExpenseHandler=(item)=>{
+      setExpenseData((prev)=>{
+        return [item,...prev]
+      })
+    }
     const isLogin=!!updatedToken
    const logoutHandler=()=>{
     setIdToken('')
@@ -26,12 +50,11 @@ const ContextProvider=(props)=>{
      localStorage.removeItem('token')
 
    }
-   console.log(updatedToken)
-   console.log(!!updatedToken)
     const context={
-        items:[],
+        items:addExpenseData,
     login:isLogin,
     setToken:tokenHandler,
+    setExpense:addExpenseHandler,
     logout:logoutHandler,
     token:updatedToken,
     userId:userId

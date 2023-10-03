@@ -55,8 +55,8 @@ const Navigation=(props)=>{
           <Nav className="me-auto">
             <NavLink to={!ctx.login?'/login':'/home'} className='mx-3 nav-link'>{!ctx.login?'Login':'Home'}</NavLink>
            {ctx.login && <NavLink  to='/expenselist' className='mx-3 nav-link'>ExpenseList</NavLink>}
-           {ctx.login && <NavLink className='mx-3 nav-link' onClick={logoutHandler}>Logout</NavLink>}
-           {ctx.login && <NavLink  className='mx-3 nav-link' onClick={profileHandler}>{!isProfileUpdated?'Complete Your Profile':'Profile'}</NavLink>}
+           {ctx.login && <NavLink to='' className='mx-3 nav-link' onClick={logoutHandler}>Logout</NavLink>}
+           {ctx.login && <NavLink to='' className='mx-3 nav-link' onClick={profileHandler}>{!isProfileUpdated?'Complete Your Profile':'Profile'}</NavLink>}
            {isProfile && <ProfileForm onConfirm={profileHandler} onConfirmUpdate={onConfirmUpdate}/>}
           </Nav>
         </Container>

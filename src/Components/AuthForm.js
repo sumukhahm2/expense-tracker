@@ -5,6 +5,7 @@ import Context from '../store/Context';
 import Image1 from '../logo/5355919.jpg'
 
 import './AuthForm.css'
+import { useNavigate } from 'react-router-dom';
 
 const AuthForm=()=>{
     const emailRef=useRef()
@@ -18,6 +19,7 @@ const AuthForm=()=>{
     const [inLogin,setInLogin]=useState(false)
     const [passwordReset,setPasswordReset]=useState(false)
     const [loader,setLoader]=useState(false)
+    const navigate=useNavigate()
     const passwordHandler=(event)=>{
        
        setPassword(event.target.value)
@@ -76,6 +78,7 @@ const AuthForm=()=>{
             else if(data.idToken)
             {
              ctx.setToken({token:data.idToken,email:data.email})
+             navigate('/home')
                    
             }
         }

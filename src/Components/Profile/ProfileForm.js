@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import { Container } from 'react-bootstrap';
 import './ProfileForm.css'
 import Verify from '../../logo/check-mark.png'
+import Profile from '../../logo/profile.png'
 
 
 
@@ -99,7 +100,7 @@ const OverLay=(props)=>{
         <div className='overlay'>
             <Container className='border border-dark'>
            {updatedData && !update && <Container>
-                <h1 className='text-center mb-5' style={{color:'green'}}><i className="fa-solid fa-user"></i>Profile Information</h1>
+                <h1 className='text-center mb-5' style={{color:'green'}}><img src={Profile} alt='' style={{width:'60px'}}/>Profile Information</h1>
                 <Container className='text-center'>
                   <span className='rounded-circle upload-photo '>
                 <i className="fa-regular fa-image" style={{color: '#b6e3f2'}}></i></span>

@@ -4,6 +4,7 @@ const Context=React.createContext({
     items:[],
     login:()=>{},
     setToken:(item)=>{},
+    setExpense:(item)=>{},
     logout:()=>{},
     token:'',
     userId:''
