@@ -57,19 +57,7 @@ const OverLay=(props)=>{
    const inputFileHandler=(event)=>{
     event.preventDefault()
      console.log(event.target.files[0].name)
-     /* const uploadedImage=storage().ref(`files/${event.target.files[0].name}`).put(event.target.files[0])
-      uploadedImage.on(
-        'state_changed',
-        (snapshot)=>{
-
-        },
-        (error)=>console.log(error),
-        ()=>{
-            storage().ref('files').child(event.target.files[0].name).getDownloadURL().then((url)=>{
-                console.log(url)
-            })
-        }
-      )*/
+     
    }
    const verifyEmailHandler=async(event)=>{
     event.preventDefault()

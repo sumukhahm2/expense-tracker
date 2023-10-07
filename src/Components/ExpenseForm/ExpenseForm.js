@@ -1,13 +1,15 @@
 
 import React,{Fragment,useRef,useState} from 'react'
 import { Button, Dropdown, Form,NavLink,Row,Col,Container} from 'react-bootstrap';
-
+import { useSelector,useDispatch } from 'react-redux';
+import { expensesActions } from '../Redux Store/StoreExpenseSlice';
 const ExpenseForm=(props)=>{
 
  const dropdownRef=useRef()
  const amountRef=useRef()
  const descriptionref=useRef()
  const [error,setError]=useState('')
+ const dispatch=useDispatch()
   const expenseFormSubmitHandler=async(event)=>{
    event.preventDefault()
   let errorMessage='Something went wrong'
@@ -26,12 +28,16 @@ const ExpenseForm=(props)=>{
      errorMessage=data.error.message
      setError(errorMessage)
    }
-    props.getData({
-      id:data.name,
+   else{
+    console.log(data)
+     dispatch(expensesActions.addExpense({
       amount:amountRef.current.value,
       description:descriptionref.current.value,
       catogory:dropdownRef.current.value
-    }) 
+    }))
+   }
+ 
+    
   }
     return(
       <Fragment>

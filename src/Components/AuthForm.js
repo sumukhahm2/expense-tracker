@@ -1,7 +1,7 @@
-import React,{Fragment,useRef,useState,useContext} from 'react'
+import React,{Fragment,useRef,useState} from 'react'
 import { Button, Container,Form, NavLink, Row,Col, Spinner} from 'react-bootstrap';
-
-import Context from '../store/Context';
+import {useSelector,useDispatch} from 'react-redux'
+import { authActions } from './Redux Store/AuthSlice';
 import Image1 from '../logo/5355919.jpg'
 
 import './AuthForm.css'
@@ -12,7 +12,6 @@ const AuthForm=()=>{
     const resetPasswordRef=useRef()
     const passwordRef=useRef()
     const ConfirmPasswordRef=useRef()
-    const ctx=useContext(Context)
     const [password,setPassword]=useState('')
     const [confirmPassword,setConfirmPassword]=useState('')
     const [error,setError]=useState('')
@@ -20,6 +19,9 @@ const AuthForm=()=>{
     const [passwordReset,setPasswordReset]=useState(false)
     const [loader,setLoader]=useState(false)
     const navigate=useNavigate()
+   const dispatch=useDispatch()
+   const auth=useSelector((state)=>state.auth.isAuthenticated)
+   
     const passwordHandler=(event)=>{
        
        setPassword(event.target.value)
@@ -32,11 +34,13 @@ const AuthForm=()=>{
    
     const authFormSubmitHandler=async(event)=>{
        event.preventDefault()
+       console.log('form submission')
        setLoader(true)
        let errorMessage='Authentication Error'
        let response
        if(inLogin)
        {
+        console.log('in login')
           response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
           method:'POST',
           body:JSON.stringify({
@@ -77,7 +81,11 @@ const AuthForm=()=>{
             }
             else if(data.idToken)
             {
-             ctx.setToken({token:data.idToken,email:data.email})
+              console.log(data)
+             dispatch(authActions.setToken({token:data.idToken,email:data.email}))
+             dispatch(authActions.login())
+             localStorage.setItem('token',data.idToken)
+             localStorage.setItem('email',data.email)
              navigate('/home')
                    
             }

@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import ContextProvider from './store/ContextProvider';
+import { Provider } from 'react-redux';
 import '../node_modules/react-bootstrap/dist/react-bootstrap'
 import '../node_modules/bootstrap/dist/css/bootstrap.css'
+import store from './Components/Redux Store/ReduxStore';
 const firebaseConfig = {
     apiKey: "AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog",
     authDomain: "expense-tracker-e1878.firebaseapp.com",
@@ -16,11 +17,12 @@ const firebaseConfig = {
   };
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
- <ContextProvider>
+<Provider store={store}>
   <BrowserRouter>
     <App />
     </BrowserRouter>
-    </ContextProvider>
+    </Provider>
+   
   
 );
 

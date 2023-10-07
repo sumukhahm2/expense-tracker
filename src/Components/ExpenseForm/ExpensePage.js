@@ -1,37 +1,36 @@
-import React,{Fragment,useState,useEffect,useContext} from 'react'
+import React,{Fragment,useState,useEffect} from 'react'
 import { Container,Row,Col,Button,Form } from 'react-bootstrap';
 import ExpenseForm from './ExpenseForm';
 import ExpenseImage from'../../logo/accounting (1).png'
-import Context from '../../store/Context';
 import EditExpense from './EditExpense';
+import { useSelector,useDispatch } from 'react-redux';
+import { expensesActions } from '../Redux Store/StoreExpenseSlice';
 const ExpensePage=(props)=>{
   const [addPage,setPage]=useState(false)
   const [editExpense,setEditExpense]=useState()
-  const [deleteExpense,setdeleteExpense]=useState()
- const ctx=useContext(Context)
+  const expenses=useSelector((state)=>state.storeexpense.items)
+  const dispatch=useDispatch()
+ 
     const addExpenseHandler=()=>{
      setPage(true)
     }
-    const expenseDataHandler=(data)=>{
-     ctx.setExpense(data)
-     setPage(false)
-    }
+   
     const expenseEdithandler=(item)=>{
         setPage(true)
      setEditExpense(item)
      
     }
     const editedDataHandler=(item)=>{
-       ctx.editExpense(item)
+        dispatch(expensesActions.editExpense(item))
        setPage(false)
     }
     const expenseDeleteHandler=async (item)=>{
         const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/expenses/${item.id}.json`,{
     method:'DELETE'
    })
-       ctx.deleteExpense(item)
+       dispatch(expensesActions.removeExpense(item))
     }
-    
+    console.log(expenses)
     return(
      <Fragment> 
         <Container fluid>
@@ -62,7 +61,7 @@ const ExpensePage=(props)=>{
             <Col className='col-4'><h5>Description</h5></Col>
             <Col className='col-4'><h5> Amount Debited</h5></Col>
         </Row>    
-       {ctx.items.map((item)=><li style={{backgroundColor:'#F7B376',listStyle:'none'}} key={item.id} className='mb-1 mt-1'><Row  style={{backgroundColor:'#F7B376'}} >
+       {expenses.map((item)=><li style={{backgroundColor:'#F7B376',listStyle:'none'}} key={item.id} className='mb-1 mt-1'><Row  style={{backgroundColor:'#F7B376'}} >
             <Col className='col-2'><h6>{item.catogory}</h6></Col>
             <Col className='col-4'><h6>{item.description}</h6></Col>
             <Col className='col-2'><h6>Rs.{item.amount}/-</h6></Col>
@@ -78,7 +77,7 @@ const ExpensePage=(props)=>{
        <Button className='btn ' style={{backgroundColor:'#2F6204'}} onClick={addExpenseHandler}>Add Expense</Button>
        </Container>
        
-       {addPage && !editExpense && <ExpenseForm getData={expenseDataHandler}/>}
+       {addPage && !editExpense && <ExpenseForm />}
        {addPage && editExpense && <EditExpense data={editExpense} editedData={editedDataHandler}/>}
        </Col>
        </Row>

@@ -1,14 +1,18 @@
-import React,{Fragment,useContext,useState,useEffect} from 'react'
+import React,{Fragment,useState,useEffect} from 'react'
 import { Container,Nav,Navbar } from 'react-bootstrap';
 import ExpenseImage from '../../logo/budget.png'
+import { useSelector,useDispatch } from 'react-redux';
+import {authActions} from '../Redux Store/AuthSlice';
 import './Navigation.css'
-import Context from '../../store/Context';
 import ProfileForm from '../Profile/ProfileForm';
 import { NavLink } from 'react-router-dom';
 const Navigation=(props)=>{
   const [isProfileUpdated,setIsProfileUpdated]=useState(false)
-  const ctx=useContext(Context)
+
   const [isProfile,setProfile]=useState(false)
+  const auth=useSelector((state)=>state.auth.isAuthenticated)
+  const token=useSelector((state)=>state.auth.token)
+   const dispatch=useDispatch()
   useEffect(()=>{
     async function fetchUpdatedData(){
       let response
@@ -35,7 +39,10 @@ const Navigation=(props)=>{
     fetchUpdatedData()
   },[])
   const logoutHandler=()=>{
-    ctx.logout()
+   dispatch(authActions.logout())
+   localStorage.removeItem('token')
+        localStorage.removeItem('email')
+   console.log(token)
   }
   const profileHandler=()=>{
    
@@ -53,10 +60,10 @@ const Navigation=(props)=>{
         <Container >
           <Navbar.Brand href="#home"><img src={ExpenseImage} style={{width:'50px'}} alt=''/>Expense Tracker</Navbar.Brand>
           <Nav className="me-auto">
-            <NavLink to={!ctx.login?'/login':'/home'} className='mx-3 nav-link'>{!ctx.login?'Login':'Home'}</NavLink>
-           {ctx.login && <NavLink  to='/expenselist' className='mx-3 nav-link'>ExpenseList</NavLink>}
-           {ctx.login && <NavLink to='' className='mx-3 nav-link' onClick={logoutHandler}>Logout</NavLink>}
-           {ctx.login && <NavLink to='' className='mx-3 nav-link' onClick={profileHandler}>{!isProfileUpdated?'Complete Your Profile':'Profile'}</NavLink>}
+            <NavLink to={!auth?'/login':'/home'} className='mx-3 nav-link'>{!auth?'Login':'Home'}</NavLink>
+           {auth && <NavLink  to='/expenselist' className='mx-3 nav-link'>ExpenseList</NavLink>}
+           {auth && <NavLink to='' className='mx-3 nav-link' onClick={logoutHandler}>Logout</NavLink>}
+           {auth && <NavLink to='' className='mx-3 nav-link' onClick={profileHandler}>{!isProfileUpdated?'Complete Your Profile':'Profile'}</NavLink>}
            {isProfile && <ProfileForm onConfirm={profileHandler} onConfirmUpdate={onConfirmUpdate}/>}
           </Nav>
         </Container>
