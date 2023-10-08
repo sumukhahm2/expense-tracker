@@ -1,8 +1,33 @@
 .me-auto{
     position: absolute;
     right:10%;
-  
+   background-color:  #1A2228;
 }
 .nav-linkr{
     color: aqua;
 }
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 24px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  
+  }
+  
+  
+  @media screen and (max-width:768){
+    body{
+        width:auto
+    }
+    .me-auto{
+        background-color:black;
+    }
+    
+  }
+  

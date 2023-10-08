@@ -3,6 +3,7 @@ import React,{Fragment,useRef,useState} from 'react'
 import { Button, Dropdown, Form,NavLink,Row,Col,Container} from 'react-bootstrap';
 import { useSelector,useDispatch } from 'react-redux';
 import { expensesActions } from '../Redux Store/StoreExpenseSlice';
+
 const ExpenseForm=(props)=>{
 
  const dropdownRef=useRef()
@@ -13,7 +14,7 @@ const ExpenseForm=(props)=>{
   const expenseFormSubmitHandler=async(event)=>{
    event.preventDefault()
   let errorMessage='Something went wrong'
-   const response= await fetch('https://expense-tracker-e1878-default-rtdb.firebaseio.com/expenses.json',{
+   const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${localStorage.getItem('email').split('@')[0]}.json`,{
     method:'POST',
     body:JSON.stringify({
       amount:amountRef.current.value,
@@ -35,9 +36,10 @@ const ExpenseForm=(props)=>{
       description:descriptionref.current.value,
       catogory:dropdownRef.current.value
     }))
+    dispatch(expensesActions.setAmount())
    }
- 
-    
+   props.isConfirm()
+   
   }
     return(
       <Fragment>

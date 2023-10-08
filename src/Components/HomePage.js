@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 const HomePage=()=>{
     return(
       <Fragment>
-        <Container fluid>
+        <Container fluid className='text-center'>
         <h1>Welcome To Expense tracker</h1>
         <img src={PoorImage} alt=''/>
         </Container>

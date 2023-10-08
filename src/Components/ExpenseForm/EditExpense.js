@@ -2,6 +2,7 @@
 import React,{Fragment,useState} from 'react'
 import { Button, Dropdown, Form,NavLink,Row,Col,Container} from 'react-bootstrap';
 
+
 const EditExpense=(props)=>{
  const[amount,setAmount]=useState()
  const[description,setDescription]=useState()
@@ -13,12 +14,12 @@ const EditExpense=(props)=>{
   const descriptionUpdate=(event)=>{
     setDescription(event.target.value)
   }
-  const catogoryUpdate=(event)=>{
+  const catogoryUpdate=(event)=>{ 
     setCatogory(event.target.value)
   }
   const editedFormhandler=async(event)=>{
     event.preventDefault()
-    const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/expenses/${props.data.id}.json`,{
+    const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${localStorage.getItem('email').split('@')[0]}expenses/${props.data.id}.json`,{
         method:'PUT',
         body:JSON.stringify({
             amount:amount,

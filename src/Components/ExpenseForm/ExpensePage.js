@@ -1,14 +1,19 @@
-import React,{Fragment,useState,useEffect} from 'react'
+import React,{Fragment,useState,useRef} from 'react'
 import { Container,Row,Col,Button,Form } from 'react-bootstrap';
 import ExpenseForm from './ExpenseForm';
 import ExpenseImage from'../../logo/accounting (1).png'
 import EditExpense from './EditExpense';
 import { useSelector,useDispatch } from 'react-redux';
 import { expensesActions } from '../Redux Store/StoreExpenseSlice';
+import { CSVLink } from 'react-csv'
+
 const ExpensePage=(props)=>{
   const [addPage,setPage]=useState(false)
+  const csvLink=useRef()
   const [editExpense,setEditExpense]=useState()
   const expenses=useSelector((state)=>state.storeexpense.items)
+  const expenseAmount=useSelector((state)=>state.storeexpense.totalAmount)
+   
   const dispatch=useDispatch()
  
     const addExpenseHandler=()=>{
@@ -25,12 +30,28 @@ const ExpensePage=(props)=>{
        setPage(false)
     }
     const expenseDeleteHandler=async (item)=>{
-        const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/expenses/${item.id}.json`,{
+        const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${localStorage.getItem('email').split('@')[0]}expenses/${item.id}.json`,{
     method:'DELETE'
    })
        dispatch(expensesActions.removeExpense(item))
     }
-    console.log(expenses)
+   
+    const headers=[
+        {
+            label:'Amount',key:'amount'
+        },
+        {
+            label:'Catogory',key:'catogory'
+        },
+        {
+            label:'Description',key:'description'
+        }
+    ]
+    const csvFileLink={
+        filename:'expenses.csv',
+        headers:headers,
+        data:expenses
+    }
     return(
      <Fragment> 
         <Container fluid>
@@ -71,13 +92,26 @@ const ExpensePage=(props)=>{
         <Row style={{backgroundColor:'#F7B376'}} className='p-2'>  
             <Col className='col-4'><h5>Total Expense(Debit)</h5></Col>
             <Col className='col-4'></Col>
-            <Col className='col-4'><h5>Rs.0/-</h5></Col>
+            <Col className='col-4'><h5>Rs.{expenseAmount}/-</h5></Col>
         </Row>
-       <Container className='text-center m-2' fluid>
-       <Button className='btn ' style={{backgroundColor:'#2F6204'}} onClick={addExpenseHandler}>Add Expense</Button>
+       <Container className='text-center m-2 ' fluid>
+       <Button className='btn m-2' style={{backgroundColor:'#2F6204'}} onClick={addExpenseHandler}>Add Expense</Button>
+      <Button>
+       <CSVLink
+       style={{textDecoration:'none',color:'white'}}
+       type='button'
+         {...csvFileLink}
+         filename='transactions.csv'
+         className='hidden'
+         ref={csvLink}
+         target='_blank'
+       >
+        Download(CSV)
+        </CSVLink>
+        </Button>
        </Container>
        
-       {addPage && !editExpense && <ExpenseForm />}
+       {addPage && !editExpense && <ExpenseForm isConfirm={()=>{setPage(false)}}/>}
        {addPage && editExpense && <EditExpense data={editExpense} editedData={editedDataHandler}/>}
        </Col>
        </Row>

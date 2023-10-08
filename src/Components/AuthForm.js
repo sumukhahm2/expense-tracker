@@ -35,6 +35,7 @@ const AuthForm=()=>{
     const authFormSubmitHandler=async(event)=>{
        event.preventDefault()
        console.log('form submission')
+       
        setLoader(true)
        let errorMessage='Authentication Error'
        let response
@@ -86,11 +87,12 @@ const AuthForm=()=>{
              dispatch(authActions.login())
              localStorage.setItem('token',data.idToken)
              localStorage.setItem('email',data.email)
-             navigate('/home')
-                   
+            
+            
             }
         }
         setLoader(false)
+      
     
     }
     const switchModeHandler=(event)=>{
@@ -166,7 +168,7 @@ const AuthForm=()=>{
       {inLogin && !passwordReset && <a href='' onClick={forgotPasswordHandler} >forgot password?</a>}
       </Form.Group>
       {!passwordReset && <Form.Group className="mb-3  m-3">
-      <Form.Text>{inLogin?'Dont Have An Account':'Already Have An Account?'}</Form.Text>
+      <Form.Label>{inLogin?'Dont Have An Account':'Already Have An Account?'}</Form.Label>
         <a href='' onClick={switchModeHandler}>{inLogin?'SignUp':'LogIn'}</a> 
       </Form.Group>}
       {passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
