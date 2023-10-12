@@ -6,36 +6,37 @@ import EditExpense from './EditExpense';
 import { useSelector,useDispatch } from 'react-redux';
 import { expensesActions } from '../Redux Store/StoreExpenseSlice';
 import { CSVLink } from 'react-csv'
-
+import { deleteExpenseData } from '../Redux Store/FetchExpenseDataActions';
+import { editExpenseData } from '../Redux Store/FetchExpenseDataActions';
 const ExpensePage=(props)=>{
   const [addPage,setPage]=useState(false)
   const csvLink=useRef()
   const [editExpense,setEditExpense]=useState()
   const expenses=useSelector((state)=>state.storeexpense.items)
   const expenseAmount=useSelector((state)=>state.storeexpense.totalAmount)
-   
+  const credit=useSelector((state)=>state.storeexpense.credit)
+  const creditAmount=useSelector((state)=>state.storeexpense.totalCreditAmount)
   const dispatch=useDispatch()
- 
     const addExpenseHandler=()=>{
      setPage(true)
     }
-   
     const expenseEdithandler=(item)=>{
         setPage(true)
      setEditExpense(item)
      
     }
     const editedDataHandler=(item)=>{
-        dispatch(expensesActions.editExpense(item))
+        console.log(item)
+       
+        dispatch(editExpenseData(item))
        setPage(false)
     }
-    const expenseDeleteHandler=async (item)=>{
-        const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${localStorage.getItem('email').split('@')[0]}expenses/${item.id}.json`,{
-    method:'DELETE'
-   })
-       dispatch(expensesActions.removeExpense(item))
+    const expenseDeleteHandler=(item)=>{
+        console.log(item)
+        dispatch(deleteExpenseData(item))
     }
-   
+   console.log(credit)
+   console.log(expenses)
     const headers=[
         {
             label:'Amount',key:'amount'
@@ -52,6 +53,7 @@ const ExpensePage=(props)=>{
         headers:headers,
         data:expenses
     }
+    
     return(
      <Fragment> 
         <Container fluid>
@@ -65,16 +67,17 @@ const ExpensePage=(props)=>{
             <Col className='col-4'><h5>Description</h5></Col>
             <Col className='col-4'><h5> Amount Credited</h5></Col>
        </Row>
-      
-        <Row style={{backgroundColor:'#C8F191'}}>
-            <Col className='col-4'>{props.name}</Col>
-            <Col className='col-4'>{props.description}</Col>
-            <Col className='col-4'>{props.amount}</Col>
-        </Row > 
+       {credit.map((item)=><li style={{backgroundColor:'#83F1BF',listStyle:'none'}} key={item.id} className='mb-1 mt-1'><Row  style={{backgroundColor:'#59E585'}} >
+            <Col className='col-2'><h6>{item.catogory}</h6></Col>
+            <Col className='col-4'><h6>{item.description}</h6></Col>
+            <Col className='col-2'><h6>Rs.{item.amount}/-</h6></Col>
+            <Col className='col-2 mt-1'><Button className='btn btn-warning ' style={{height:'30px',width:'30px'}} onClick={expenseEdithandler.bind(null,item)}><i class="fa-solid fa-pen-to-square "></i></Button></Col>
+            <Col className='col-2 mt-1 mb-1'><Button className='btn btn-danger'><i class="fa-solid fa-trash" onClick={expenseDeleteHandler.bind(null,item)}></i></Button></Col>
+        </Row> </li>) }
         <Row style={{backgroundColor:'#C8F191'}}className='p-2'> 
             <Col className='col-4'><h5>Total Income(Credit)</h5></Col>
             <Col className='col-4'></Col>
-            <Col className='col-4'><h5>Rs.0/-</h5></Col>
+            <Col className='col-4'><h5>Rs.{creditAmount}/-</h5></Col>
         </Row>
        <br/>
         <Row style={{backgroundColor:'#F0A853'}} className='border-bottom border-dark'>
@@ -82,7 +85,7 @@ const ExpensePage=(props)=>{
             <Col className='col-4'><h5>Description</h5></Col>
             <Col className='col-4'><h5> Amount Debited</h5></Col>
         </Row>    
-       {expenses.map((item)=><li style={{backgroundColor:'#F7B376',listStyle:'none'}} key={item.id} className='mb-1 mt-1'><Row  style={{backgroundColor:'#F7B376'}} >
+       {expenses.map((item)=><li style={{backgroundColor:'#F7B376',listStyle:'none'}} key={item.id} className='mb-1 mt-1'><Row  style={{backgroundColor:'#F79254'}} >
             <Col className='col-2'><h6>{item.catogory}</h6></Col>
             <Col className='col-4'><h6>{item.description}</h6></Col>
             <Col className='col-2'><h6>Rs.{item.amount}/-</h6></Col>
@@ -109,8 +112,8 @@ const ExpensePage=(props)=>{
         Download(CSV)
         </CSVLink>
         </Button>
+       {expenseAmount>=10000 && <Button className='btn btn-warning m-2'>Add Premium</Button>}
        </Container>
-       
        {addPage && !editExpense && <ExpenseForm isConfirm={()=>{setPage(false)}}/>}
        {addPage && editExpense && <EditExpense data={editExpense} editedData={editedDataHandler}/>}
        </Col>
@@ -119,5 +122,4 @@ const ExpensePage=(props)=>{
      </Fragment>
     );
 }
-
 export default ExpensePage

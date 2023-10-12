@@ -4,10 +4,11 @@ import {useSelector,useDispatch} from 'react-redux'
 import { authActions } from './Redux Store/AuthSlice';
 import Image1 from '../logo/5355919.jpg'
 
+
 import './AuthForm.css'
 import { useNavigate } from 'react-router-dom';
 
-const AuthForm=()=>{
+const AuthForm=(props)=>{
     const emailRef=useRef()
     const resetPasswordRef=useRef()
     const passwordRef=useRef()
@@ -18,7 +19,6 @@ const AuthForm=()=>{
     const [inLogin,setInLogin]=useState(false)
     const [passwordReset,setPasswordReset]=useState(false)
     const [loader,setLoader]=useState(false)
-    const navigate=useNavigate()
    const dispatch=useDispatch()
    const auth=useSelector((state)=>state.auth.isAuthenticated)
    
@@ -92,7 +92,8 @@ const AuthForm=()=>{
             }
         }
         setLoader(false)
-      
+        window.location.reload() 
+     
     
     }
     const switchModeHandler=(event)=>{

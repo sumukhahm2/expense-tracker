@@ -2,7 +2,8 @@ import {createSlice} from '@reduxjs/toolkit'
 const defaultAuth={
   isAuthenticated:false,
   token:'',
-  email:''
+  email:'',
+  
 }
 console.log(defaultAuth.isAuthenticated)
 const AuthSlice=createSlice({
@@ -22,6 +23,7 @@ const AuthSlice=createSlice({
         state.email=action.payload.email
         
     },
+   
     
   }
 

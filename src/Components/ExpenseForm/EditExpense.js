@@ -1,13 +1,13 @@
 
 import React,{Fragment,useState} from 'react'
 import { Button, Dropdown, Form,NavLink,Row,Col,Container} from 'react-bootstrap';
-
-
+import { editExpenseData } from '../Redux Store/FetchExpenseDataActions';
+import { useDispatch } from 'react-redux';
 const EditExpense=(props)=>{
  const[amount,setAmount]=useState()
  const[description,setDescription]=useState()
  const[catogory,setCatogory]=useState()
-  
+  const dispatch=useDispatch()
   const amountUpdate=(event)=>{
     setAmount(event.target.value)
   }
@@ -17,26 +17,18 @@ const EditExpense=(props)=>{
   const catogoryUpdate=(event)=>{ 
     setCatogory(event.target.value)
   }
-  const editedFormhandler=async(event)=>{
+  const editedFormhandler=(event)=>{
     event.preventDefault()
-    const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${localStorage.getItem('email').split('@')[0]}expenses/${props.data.id}.json`,{
-        method:'PUT',
-        body:JSON.stringify({
-            amount:amount,
-        description:description,
-        catogory:catogory
-        })
-    })
-    const data=await response.json()
-    
-    props.editedData({
-        id:props.data.id,
-        amount:amount,
-        description:description,
-        catogory:catogory
-    })
+    const editData={
+      id:props.data.id,
+      type:props.data.type,
+      amount:amount,
+      description:description,
+      catogory:catogory
+    }
+    dispatch(editExpenseData(editData))
+    props.editedData(editData)
   }
-  console.log(props.id)
     return(
       <Fragment>
         <Container style={{backgroundColor:'#D3ED43',height:'300px'}} className='border border-dark'>
@@ -53,19 +45,15 @@ const EditExpense=(props)=>{
                     <Col className='col-6'>
                     <h5 className='m-2'>Amount</h5>
                     </Col>
-                    
                     <Col className='col-6'>
                     <h5 className='m-2'>Catogory</h5> 
                     </Col>
-                    
                 </Row>
                 <Row>
                     <Col className='col-4'>
                     <input type='number'className='m-2'  onChange={amountUpdate} required/>
                     </Col>
-                    
                     <Col className='col-4 '>
-                    
                         <Form.Control as="select" className='  w-75'onChange={catogoryUpdate} style={{marginLeft:'10px'}} required>
                         <option value='' selected>Select Catogory</option>
                             <option value="Food">Food</option>
@@ -78,7 +66,6 @@ const EditExpense=(props)=>{
                     <Col className='col-4'>
                       <Button className=' btn btn-success btn-circle btn-md' type='submit'><i class="fa-solid fa-check" style={{color:'#fcfcfd'}}></i></Button>
                     </Col>
-                    
                     <Row className='text-center'>
                     <h5 className='m-2'>Description</h5>
                     </Row>
@@ -90,9 +77,5 @@ const EditExpense=(props)=>{
         </Container>
       </Fragment>
     );
-
-
 }
-
-
 export default EditExpense

@@ -1,20 +1,18 @@
 import React,{Fragment,useRef} from 'react'
 import { Form,Container,Button } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { updateProfileData } from '../Redux Store/FetchProfileData';
 const UpdateProfile=(props)=>{
     const fullNameRef=useRef()
     const urlRef=useRef()
-    const profileUpdateHandler=async()=>{
-        const response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
-            method:'POST',
-            body:JSON.stringify({
-                idToken:localStorage.getItem('token'),
-                displayName:fullNameRef.current.value,
-                photoUrl:urlRef.current.value,
-                returnSecureToken:true
-            })
-        })
-        const data=await response.json()
-        props.profileData(data)
+    const dispatch=useDispatch()
+    const profileUpdateHandler=()=>{
+        const updatedData={
+            name:fullNameRef.current.value,
+            url:urlRef.current.value
+        }
+       dispatch(updateProfileData(updatedData))
+       
     }
     return(
        <Fragment>

@@ -1,7 +1,11 @@
-import React,{Fragment} from'react'
+import React,{Fragment,useEffect} from'react'
 import PoorImage from '../logo/poor.png'
 import { Container } from 'react-bootstrap';
+
 const HomePage=()=>{
+ 
+  
+   
     return(
       <Fragment>
         <Container fluid className='text-center'>
