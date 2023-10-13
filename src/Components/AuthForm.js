@@ -1,12 +1,12 @@
 import React,{Fragment,useRef,useState} from 'react'
-import { Button, Container,Form, NavLink, Row,Col, Spinner} from 'react-bootstrap';
+import { Button, Container,Form, Row,Col, Spinner} from 'react-bootstrap';
 import {useSelector,useDispatch} from 'react-redux'
 import { authActions } from './Redux Store/AuthSlice';
 import Image1 from '../logo/5355919.jpg'
 
 
 import './AuthForm.css'
-import { useNavigate } from 'react-router-dom';
+
 
 const AuthForm=(props)=>{
     const emailRef=useRef()
@@ -136,6 +136,7 @@ const AuthForm=(props)=>{
      }
     return(
      <Fragment>
+     
         <Container fluid className=''>
        
           <Row>
@@ -148,7 +149,7 @@ const AuthForm=(props)=>{
                 </Container>
                 
        {!passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
-        <Form.Label>Email Id</Form.Label>
+        <Form.Label data-testid='email' htmlFor='emailid'>Email Id</Form.Label>
         <Form.Control placeholder="Enter Your Email"  type='email'required ref={emailRef}  />
       </Form.Group>}
       {!passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
@@ -188,7 +189,9 @@ const AuthForm=(props)=>{
             </Col>
           </Row> 
         </Container>
+       
      </Fragment>
+    
 
     );
 }

@@ -1,4 +1,4 @@
-import React,{Fragment,useEffect,useState} from 'react'
+import React,{Fragment,useEffect} from 'react'
 import './App.css';
 import AuthForm from './Components/AuthForm';
 import Navigation from './Components/Navigation/Navigation';
@@ -43,7 +43,7 @@ useEffect(()=>{
       {auth && <Route path='/home' element={<HomePage/>} exact></Route>}
       {auth && <Route path='/expenselist' element={<ExpensePage/>} exact></Route>}
       {!auth && <Route path='/login' element={<AuthForm />}></Route>}
-      
+      {auth && <Route path='/login' element={<Navigate to='/home'/>}></Route>}
       {!auth && <Route path='/home' element={<Navigate to='/login'/>}/>}
       <Route path='*' element={<Navigate to='/login'/>}/>
       </Routes>
