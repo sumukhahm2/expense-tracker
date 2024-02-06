@@ -10,7 +10,7 @@ export const fetchDebitExpenseData=()=>{
             if(localStorage.getItem('email'))
               urlName=localStorage.getItem('email').split('@')[0]+'debitexpense'
             console.log(urlName)
-            const response=await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${urlName}.json`,{
+            const response=await fetch(`https://expensetracker-aa159-default-rtdb.firebaseio.com/${urlName}.json`,{
                 method:'GET'
         
             })
@@ -37,7 +37,7 @@ export const fetchCreditExpenseData=()=>{
           let urlName
           if(localStorage.getItem('email'))
             urlName=localStorage.getItem('email').split('@')[0]+'creditexpense'
-          const response=await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${urlName}.json`,{
+          const response=await fetch(`https://expensetracker-aa159-default-rtdb.firebaseio.com/${urlName}.json`,{
               method:'GET'
       
           })
@@ -67,7 +67,7 @@ export const editExpenseData=(editData)=>{
         urlName=localStorage.getItem('email').split('@')[0]+'creditexpense'
        else
         urlName=localStorage.getItem('email').split('@')[0]+'debitexpense'
-      const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${urlName}/${editData.id}.json`,{
+      const response= await fetch(`https://expensetracker-aa159-default-rtdb.firebaseio.com/${urlName}/${editData.id}.json`,{
         method:'PUT',
         body:JSON.stringify({
           type:editData.type,
@@ -91,7 +91,7 @@ export const sendExpenseData=(inputDatas)=>{
        urlName=localStorage.getItem('email').split('@')[0]+'creditexpense'
      else
      urlName=localStorage.getItem('email').split('@')[0]+'debitexpense'
-    const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${urlName}.json`,{
+    const response= await fetch(`https://expensetracker-aa159-default-rtdb.firebaseio.com/${urlName}.json`,{
      method:'POST',
      body:JSON.stringify({
       type:inputDatas.type,
@@ -129,7 +129,9 @@ export const deleteExpenseData=(item)=>{
        urlName=localStorage.getItem('email').split('@')[0]+'creditexpense'
      else
      urlName=localStorage.getItem('email').split('@')[0]+'debitexpense'
-    const response= await fetch(`https://expense-tracker-e1878-default-rtdb.firebaseio.com/${urlName}/${item.id}.json`,{
+
+    console.log(item)
+    const response= await fetch(`https://expensetracker-aa159-default-rtdb.firebaseio.com/${urlName}/${item.id}.json`,{
       method:'DELETE'
      })
          dispatch(expensesActions.removeExpense(item))

@@ -1,4 +1,4 @@
-import React,{Fragment,useState,useRef} from 'react'
+import React,{Fragment,useState,useRef,useEffect} from 'react'
 import { Container,Row,Col,Button,Form } from 'react-bootstrap';
 import ExpenseForm from './ExpenseForm';
 import ExpenseImage from'../../logo/accounting (1).png'
@@ -6,6 +6,7 @@ import EditExpense from './EditExpense';
 import { useSelector,useDispatch } from 'react-redux';
 import { expensesActions } from '../Redux Store/StoreExpenseSlice';
 import { CSVLink } from 'react-csv'
+import { useNavigate } from 'react-router-dom';
 import { deleteExpenseData } from '../Redux Store/FetchExpenseDataActions';
 import { editExpenseData } from '../Redux Store/FetchExpenseDataActions';
 const ExpensePage=(props)=>{
@@ -17,6 +18,10 @@ const ExpensePage=(props)=>{
   const credit=useSelector((state)=>state.storeexpense.credit)
   const creditAmount=useSelector((state)=>state.storeexpense.totalCreditAmount)
   const dispatch=useDispatch()
+  const navigate=useNavigate()
+  useEffect(()=>{
+    navigate('/expenselist')
+  },[])
     const addExpenseHandler=()=>{
      setPage(true)
     }
@@ -53,6 +58,7 @@ const ExpensePage=(props)=>{
         headers:headers,
         data:expenses
     }
+    console.log(credit)
     
     return(
      <Fragment> 
@@ -67,8 +73,8 @@ const ExpensePage=(props)=>{
             <Col className='col-4'><h5>Description</h5></Col>
             <Col className='col-4'><h5> Amount Credited</h5></Col>
        </Row>
-       {credit.map((item)=><li style={{backgroundColor:'#83F1BF',listStyle:'none'}} key={item.id} className='mb-1 mt-1'><Row  style={{backgroundColor:'#59E585'}} >
-            <Col className='col-2'><h6>{item.catogory}</h6></Col>
+       { credit.map((item)=><li style={{backgroundColor:'#83F1BF',listStyle:'none'}} key={item.id} className='mb-1 mt-1'><Row  style={{backgroundColor:'#59E585'}} >
+       <Col className='col-2'><h6>{item.catogory}</h6></Col>
             <Col className='col-4'><h6>{item.description}</h6></Col>
             <Col className='col-2'><h6>Rs.{item.amount}/-</h6></Col>
             <Col className='col-2 mt-1'><Button className='btn btn-warning ' style={{height:'30px',width:'30px'}} onClick={expenseEdithandler.bind(null,item)}><i class="fa-solid fa-pen-to-square "></i></Button></Col>

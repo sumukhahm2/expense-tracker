@@ -13,8 +13,6 @@ const AuthForm=(props)=>{
     const resetPasswordRef=useRef()
     const passwordRef=useRef()
     const ConfirmPasswordRef=useRef()
-    const [password,setPassword]=useState('')
-    const [confirmPassword,setConfirmPassword]=useState('')
     const [error,setError]=useState('')
     const [inLogin,setInLogin]=useState(false)
     const [passwordReset,setPasswordReset]=useState(false)
@@ -22,26 +20,17 @@ const AuthForm=(props)=>{
    const dispatch=useDispatch()
    const auth=useSelector((state)=>state.auth.isAuthenticated)
    
-    const passwordHandler=(event)=>{
-       
-       setPassword(event.target.value)
-    }
-    const confirmPasswordHandler=(event)=>{
-        
-        setConfirmPassword(event.target.value)
-        
-    }
+   
+   
    
     const authFormSubmitHandler=async(event)=>{
        event.preventDefault()
-       console.log('form submission')
        
        setLoader(true)
        let errorMessage='Authentication Error'
        let response
        if(inLogin)
        {
-        console.log('in login')
           response=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAu2UHhhGAzmHYd7ZeIIIT_QFH-qiJ9xog',{
           method:'POST',
           body:JSON.stringify({
@@ -68,7 +57,7 @@ const AuthForm=(props)=>{
          }
          })
        }
-        if(!inLogin && password!==confirmPassword)
+        if(!inLogin && passwordRef.current.value!==ConfirmPasswordRef.current.value)
         {
           errorMessage='Password Missmatch Kindly Enter Password again'
           setError(errorMessage)
@@ -87,12 +76,12 @@ const AuthForm=(props)=>{
              dispatch(authActions.login())
              localStorage.setItem('token',data.idToken)
              localStorage.setItem('email',data.email)
-            
+             window.location.reload() 
             
             }
         }
         setLoader(false)
-        window.location.reload() 
+        
      
     
     }
@@ -154,11 +143,11 @@ const AuthForm=(props)=>{
       </Form.Group>}
       {!passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
         <Form.Label>Password</Form.Label>
-        <Form.Control placeholder="Enter Password" type='password'required ref={passwordRef} onChange={passwordHandler} />
+        <Form.Control placeholder="Enter Password" type='password'required ref={passwordRef}  />
       </Form.Group>}
      {!inLogin && !passwordReset && <Form.Group className="mb-3  m-3 fw-bold">
         <Form.Label>Confirm Password</Form.Label>
-        <Form.Control placeholder="Confirm Password" type='password'  required ref={ConfirmPasswordRef} onChange={confirmPasswordHandler}/>
+        <Form.Control placeholder="Confirm Password" type='password'  required ref={ConfirmPasswordRef} />
       </Form.Group> }
       {error && <p>{error}</p>}
       {!passwordReset && !loader &&<Form.Group className="mb-3  m-3">

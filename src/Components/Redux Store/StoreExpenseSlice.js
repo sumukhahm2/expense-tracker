@@ -6,6 +6,7 @@ const defaultExpenses={
  totalCreditAmount:0,
  isRefresh:false
 }
+console.log('hello')
 const StoreExpensesSlice=createSlice({
   name:'StoreExpenses',
   initialState:defaultExpenses,
